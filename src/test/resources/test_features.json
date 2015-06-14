@@ -1,0 +1,20 @@
+{
+  "features": [
+    {
+      "name": "Test1",
+      "key": "unit.test.one",
+      "type": "string",
+      "value": "default-value",
+      "overrides": {
+        "1,2": "one-two",
+        "3": "three"
+      }
+    },
+    {
+      "name": "Test2",
+      "key": "unit.test.two",
+      "type": "boolean",
+      "value": "true"
+    }
+  ]
+}
