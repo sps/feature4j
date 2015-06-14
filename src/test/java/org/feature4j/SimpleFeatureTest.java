@@ -20,7 +20,7 @@ public class SimpleFeatureTest {
       Range.closed(1, 10), overrideValue
   );
 
-  private SimpleFeature<String> feature;
+  private SimpleFeature<String, FeaturesContext> feature;
 
   @Before
   public void setUp() throws Exception {
@@ -35,10 +35,10 @@ public class SimpleFeatureTest {
 
   @Test
   public void testValue() {
-    FeaturesContext context = FeaturesContext.EMPTY;
+    SimpleFeaturesContext context = SimpleFeaturesContext.EMPTY;
     assertEquals(value, feature.value(context));
 
-    context = FeaturesContext.builder().bucketId(5).build();
+    context = SimpleFeaturesContext.builder().bucketId(5).build();
     assertEquals(overrideValue, feature.value(context));
 
         /*

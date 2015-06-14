@@ -25,9 +25,9 @@ import java.util.List;
  */
 public class FeatureBundleProviderImpl implements FeatureBundleProvider {
 
-  private final Collection<Feature<?>> features;
+  private final Collection<Feature<?, ?>> features;
 
-  public FeatureBundleProviderImpl(List<Feature<?>> features) {
+  public FeatureBundleProviderImpl(List<Feature<?, ?>> features) {
     this.features = features;
   }
 

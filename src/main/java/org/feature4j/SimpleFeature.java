@@ -22,7 +22,7 @@ import java.util.Map;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 
-public class SimpleFeature<T> implements Feature<T> {
+public class SimpleFeature<T, C extends FeaturesContext> implements Feature<T, C> {
 
   private final Map<Range, T> overrides;
 
@@ -49,7 +49,7 @@ public class SimpleFeature<T> implements Feature<T> {
   }
 
   @Override
-  public T value(FeaturesContext context) {
+  public T value(C context) {
     for (Map.Entry<Range, T> override : overrides().entrySet()) {
       if (override.getKey().contains(firstNonNull(context.getBucketId(), 0))) {
         return override.getValue();

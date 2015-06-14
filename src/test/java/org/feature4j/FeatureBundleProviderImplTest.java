@@ -11,8 +11,8 @@ import static org.junit.Assert.assertEquals;
 
 public class FeatureBundleProviderImplTest {
 
-  private final Feature<String> feature1 = new SimpleFeature<>("1", "one", "1", null);
-  private final Feature<String>
+  private final Feature<String, FeaturesContext> feature1 = new SimpleFeature<>("1", "one", "1", null);
+  private final Feature<String, FeaturesContext>
       feature2 =
       new SimpleFeature<>("1", "two", "0",
           ImmutableMap.<Range, String>of(Range.closed(1, 1), "2"));
@@ -21,17 +21,17 @@ public class FeatureBundleProviderImplTest {
   @Before
   public void setUp() throws Exception {
     featureProvider =
-        new FeatureBundleProviderImpl(ImmutableList.<Feature<?>>of(feature1, feature2));
+        new FeatureBundleProviderImpl(ImmutableList.<Feature<?, ?>>of(feature1, feature2));
   }
 
   @Test
   public void testGetFeatures() throws Exception {
-    FeatureBundle bundle = featureProvider.getFeatures(FeaturesContext.EMPTY);
+    FeatureBundle bundle = featureProvider.getFeatures(SimpleFeaturesContext.EMPTY);
     assertEquals(2, bundle.getFeatures().size());
     assertEquals("1", bundle.get("one", String.class, null));
     assertEquals("0", bundle.get("two", String.class, null));
 
-    bundle = featureProvider.getFeatures(FeaturesContext.builder().bucketId(1).build());
+    bundle = featureProvider.getFeatures(SimpleFeaturesContext.builder().bucketId(1).build());
     assertEquals("2", bundle.get("two", String.class, null));
   }
 }

@@ -19,13 +19,13 @@ import com.google.common.collect.Range;
 
 import java.util.Map;
 
-public interface Feature<T> {
+public interface Feature<T, C extends FeaturesContext> {
 
   String key();
 
   String name();
 
-  T value(FeaturesContext context);
+  T value(C context);
 
   Map<Range, T> overrides();
 }

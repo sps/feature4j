@@ -62,7 +62,7 @@ public class JSONFeatureBundleProviderFactory implements FeatureBundleProviderFa
         .fromJson(new InputStreamReader(jsonResource, Charset.defaultCharset()),
             FeatureWrapper.class);
 
-    final ImmutableList.Builder<Feature<?>> listBuilder = ImmutableList.builder();
+    final ImmutableList.Builder<Feature<?, ?>> listBuilder = ImmutableList.builder();
 
     for (FeatureConfiguration c : features.getFeatures()) {
 

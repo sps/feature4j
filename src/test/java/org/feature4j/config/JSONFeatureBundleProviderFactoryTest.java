@@ -1,7 +1,7 @@
 package org.feature4j.config;
 
 import org.feature4j.FeatureBundleProvider;
-import org.feature4j.FeaturesContext;
+import org.feature4j.SimpleFeaturesContext;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,21 +20,21 @@ public class JSONFeatureBundleProviderFactoryTest {
       TEST_JSON =
       JSONFeatureBundleProviderFactoryTest.class.getResourceAsStream("/test_features.json");
 
-  private static final FeaturesContext
+  private static final SimpleFeaturesContext
       SESSION_0 =
-      FeaturesContext.builder().bucketId(0).build();
-  private static final FeaturesContext
+      SimpleFeaturesContext.builder().bucketId(0).build();
+  private static final SimpleFeaturesContext
       SESSION_1 =
-      FeaturesContext.builder().bucketId(1).build();
-  private static final FeaturesContext
+      SimpleFeaturesContext.builder().bucketId(1).build();
+  private static final SimpleFeaturesContext
       SESSION_2 =
-      FeaturesContext.builder().bucketId(2).build();
-  private static final FeaturesContext
+      SimpleFeaturesContext.builder().bucketId(2).build();
+  private static final SimpleFeaturesContext
       SESSION_3 =
-      FeaturesContext.builder().bucketId(3).build();
-  private static final FeaturesContext
+      SimpleFeaturesContext.builder().bucketId(3).build();
+  private static final SimpleFeaturesContext
       SESSION_99 =
-      FeaturesContext.builder().bucketId(99).build();
+      SimpleFeaturesContext.builder().bucketId(99).build();
 
   private FeatureBundleProviderFactory factory;
 
