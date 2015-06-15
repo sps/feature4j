@@ -15,27 +15,29 @@
  */
 package org.feature4j;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Range;
 
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 
 public class SimpleFeature<T, C extends FeaturesContext> implements Feature<T, C> {
 
-  private final Map<Range, T> overrides;
+  private final List<FeatureOverride<T>> overrides;
 
   private final T value;
 
   private final String name;
   private final String key;
 
-  public SimpleFeature(String name, String key, T value, Map<Range, T> overrides) {
+  public SimpleFeature(String name, String key, T value, Iterable<FeatureOverride<T>> overrides) {
     this.name = name;
     this.value = value;
     this.key = key;
-    this.overrides = firstNonNull(overrides, ImmutableMap.<Range, T>of());
+    this.overrides = ImmutableList.copyOf(firstNonNull(overrides, ImmutableList.<FeatureOverride<T>>of()));
   }
 
   @Override
@@ -48,18 +50,9 @@ public class SimpleFeature<T, C extends FeaturesContext> implements Feature<T, C
     return name;
   }
 
-  @Override
-  public T value(C context) {
-    for (Map.Entry<Range, T> override : overrides().entrySet()) {
-      if (override.getKey().contains(firstNonNull(context.getBucketId(), 0))) {
-        return override.getValue();
-      }
-    }
-    return value;
-  }
 
   @Override
-  public Map<Range, T> overrides() {
+  public Iterable<FeatureOverride<T>> overrides() {
     return overrides;
   }
 }

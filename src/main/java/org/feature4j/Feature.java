@@ -25,7 +25,5 @@ public interface Feature<T, C extends FeaturesContext> {
 
   String name();
 
-  T value(C context);
-
-  Map<Range, T> overrides();
+  Iterable<FeatureOverride<T>> overrides();
 }
