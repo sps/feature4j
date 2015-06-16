@@ -1,6 +1,8 @@
 package org.feature4j;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Range;
 
 import org.junit.Before;
@@ -9,6 +11,7 @@ import org.junit.Test;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 public class SimpleFeatureTest {
 
@@ -21,31 +24,20 @@ public class SimpleFeatureTest {
   );
 
   private SimpleFeature<String, FeaturesContext> feature;
+  private FeatureOverride<String> featureOverride;
 
   @Before
   public void setUp() throws Exception {
-    feature = new SimpleFeature<>(name, key, value, overrides);
+    featureOverride = mock(FeatureOverride.class);
+    feature = new SimpleFeature<>(name, key, value, ImmutableList.of(featureOverride));
   }
 
   @Test
   public void testBasic() {
     assertEquals(name, feature.name());
     assertEquals(key, feature.key());
+    assertEquals(value, feature.defaultValue());
+    assertEquals(1, Iterables.size(feature.overrides()));
   }
 
-  @Test
-  public void testValue() {
-    SimpleFeaturesContext context = SimpleFeaturesContext.EMPTY;
-    assertEquals(value, feature.value(context));
-
-    context = SimpleFeaturesContext.builder().bucketId(5).build();
-    assertEquals(overrideValue, feature.value(context));
-
-        /*
-         * verify empty overrides returns default value.
-         */
-    feature = new SimpleFeature<>(name, key, value, null);
-
-    assertEquals(value, feature.value(context));
-  }
 }

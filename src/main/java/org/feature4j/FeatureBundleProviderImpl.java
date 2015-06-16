@@ -15,6 +15,7 @@
  */
 package org.feature4j;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Collection;
@@ -32,11 +33,24 @@ public class FeatureBundleProviderImpl implements FeatureBundleProvider {
   }
 
   @Override
-  public FeatureBundle getFeatures(FeaturesContext request) {
+  public FeatureBundle getFeatures(FeaturesContext context) {
     final ImmutableMap.Builder<String, Object> featureMapBuilder = ImmutableMap.builder();
     for (Feature feature : features) {
-      featureMapBuilder.put(feature.key(), feature.value(request));
+      Object value = getValue(context, feature);
+      featureMapBuilder.put(feature.key(), value);
     }
     return new FeatureBundle(featureMapBuilder.build());
+  }
+
+  public Object getValue(FeaturesContext context, Feature feature) {
+    Iterable<FeatureOverride> overrides = feature.overrides();
+    Optional<Object> optValue;
+    for (FeatureOverride override : overrides) {
+      optValue = override.extractFeatureValue(context);
+      if (optValue != null && optValue.isPresent()) {
+       return optValue.get();
+      }
+    }
+    return feature.defaultValue();
   }
 }

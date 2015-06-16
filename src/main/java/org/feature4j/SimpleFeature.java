@@ -28,14 +28,14 @@ public class SimpleFeature<T, C extends FeaturesContext> implements Feature<T, C
 
   private final List<FeatureOverride<T>> overrides;
 
-  private final T value;
+  private final T defaultValue;
 
   private final String name;
   private final String key;
 
-  public SimpleFeature(String name, String key, T value, Iterable<FeatureOverride<T>> overrides) {
+  public SimpleFeature(String name, String key, T defaultValue, Iterable<FeatureOverride<T>> overrides) {
     this.name = name;
-    this.value = value;
+    this.defaultValue = defaultValue;
     this.key = key;
     this.overrides = ImmutableList.copyOf(firstNonNull(overrides, ImmutableList.<FeatureOverride<T>>of()));
   }
@@ -50,6 +50,10 @@ public class SimpleFeature<T, C extends FeaturesContext> implements Feature<T, C
     return name;
   }
 
+  @Override
+  public T defaultValue() {
+    return defaultValue;
+  }
 
   @Override
   public Iterable<FeatureOverride<T>> overrides() {

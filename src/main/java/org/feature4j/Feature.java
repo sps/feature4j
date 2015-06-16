@@ -25,5 +25,7 @@ public interface Feature<T, C extends FeaturesContext> {
 
   String name();
 
+  T defaultValue();
+
   Iterable<FeatureOverride<T>> overrides();
 }
