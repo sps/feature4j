@@ -13,19 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.feature4j;
+package org.feature4j.config;
 
-import com.google.common.collect.Range;
+import org.feature4j.FeatureOverride;
 
-import java.util.Map;
-
-public interface Feature<T, C extends FeaturesContext> {
-
-  String key();
-
-  String name();
-
-  T defaultValue();
-
-  Iterable<FeatureOverride<T>> overrides();
+public interface FeatureOverridesFactory {
+  Iterable<FeatureOverride> createOverrides(FeatureConfiguration featureConfiguration);
 }

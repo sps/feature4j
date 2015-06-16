@@ -15,17 +15,12 @@
  */
 package org.feature4j;
 
-import com.google.common.collect.Range;
 
-import java.util.Map;
+import com.google.common.base.Optional;
 
-public interface Feature<T, C extends FeaturesContext> {
-
-  String key();
-
-  String name();
-
-  T defaultValue();
-
-  Iterable<FeatureOverride<T>> overrides();
+/**
+ * Created by dannwebster on 6/15/15.
+ */
+public interface FeatureOverride<V> {
+    Optional<V> extractFeatureValue(FeaturesContext ctx);
 }

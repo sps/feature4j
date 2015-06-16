@@ -15,16 +15,13 @@
  */
 package org.feature4j.config;
 
-import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Range;
 import com.google.gson.Gson;
-
 import org.feature4j.Feature;
 import org.feature4j.FeatureBundleProvider;
 import org.feature4j.FeatureBundleProviderImpl;
+import org.feature4j.FeatureOverride;
 import org.feature4j.FeatureValueHydrator;
 import org.feature4j.SimpleFeature;
 
@@ -35,6 +32,8 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Using json as a config file format is a bit brittle and prone to human error.
  */
@@ -43,16 +42,26 @@ public class JSONFeatureBundleProviderFactory implements FeatureBundleProviderFa
   private static final Map<String, FeatureValueHydrator>
       HYDRATORS =
       ImmutableMap.<String, FeatureValueHydrator>builder()
-                  .put("string", FeatureValueHydrator.String.INSTANCE)
-                  .put("boolean", FeatureValueHydrator.Boolean.INSTANCE)
-                  .build();
+          .put("string", FeatureValueHydrator.String.INSTANCE)
+          .put("boolean", FeatureValueHydrator.Boolean.INSTANCE)
+          .build();
 
-  private static final Splitter CSV_SPLITTER = Splitter.on(",").omitEmptyStrings();
+
+  private static final CompositeFeatureOverridesFactory DEFAULT_FACTORY =
+      CompositeFeatureOverridesFactory.fromFactories(
+        new BucketRangeFeatureOverrideFactory()
+      );
 
   private final InputStream jsonResource;
+  private final FeatureOverridesFactory featureOverridesFactory;
 
   public JSONFeatureBundleProviderFactory(InputStream jsonResource) {
-    this.jsonResource = jsonResource;
+    this(jsonResource, DEFAULT_FACTORY);
+  }
+
+  public JSONFeatureBundleProviderFactory(InputStream jsonResource, FeatureOverridesFactory featureOverridesFactory) {
+    this.jsonResource = checkNotNull(jsonResource, "jsonResource must be non-null");
+    this.featureOverridesFactory = checkNotNull(featureOverridesFactory, "featureOverridesFactory must be non-null");
   }
 
   @Override
@@ -68,20 +77,12 @@ public class JSONFeatureBundleProviderFactory implements FeatureBundleProviderFa
 
       final FeatureValueHydrator<Object> objectHydrator = HYDRATORS.get(c.getType());
 
-      final ImmutableMap.Builder<Range, Object> overrides = ImmutableMap.builder();
-
-      for (Map.Entry<String, Object> entry : c.getOverrides().entrySet()) {
-        Iterable<String> ranges = CSV_SPLITTER.split(entry.getKey());
-        String lower = Iterables.get(ranges, 0);
-        String upper = Iterables.getLast(ranges, lower);
-        Range<Integer> range = Range.closed(Integer.valueOf(lower), Integer.valueOf(upper));
-        overrides.put(range, objectHydrator.value(entry.getValue()));
-      }
+      Iterable<FeatureOverride> featureOverrides = featureOverridesFactory.createOverrides(c);
 
       listBuilder.add(new SimpleFeature(c.getName(),
           c.getKey(),
           objectHydrator.value(c.getValue()),
-          overrides.build()));
+          featureOverrides));
     }
 
     return new FeatureBundleProviderImpl(listBuilder.build());

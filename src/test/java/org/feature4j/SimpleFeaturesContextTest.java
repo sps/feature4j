@@ -15,17 +15,27 @@
  */
 package org.feature4j;
 
-import com.google.common.collect.Range;
+import junit.framework.TestCase;
+import org.junit.Test;
 
-import java.util.Map;
+public class SimpleFeaturesContextTest extends TestCase {
 
-public interface Feature<T, C extends FeaturesContext> {
+  @Test
+  public void testEmptyContextShouldHaveBucket0() throws Exception {
+    // WHEN
+    FeaturesContext subject = SimpleFeaturesContext.EMPTY;
 
-  String key();
+    // THEN
+    assertEquals(0, subject.getBucketId());
 
-  String name();
+  }
+  @Test
+  public void testBuilderShouldAllowCreationOfBucketId() throws Exception {
+    // WHEN
+    FeaturesContext subject = SimpleFeaturesContext.builder().bucketId(1).build();
 
-  T defaultValue();
+    // THEN
+    assertEquals(1, subject.getBucketId());
 
-  Iterable<FeatureOverride<T>> overrides();
+  }
 }
